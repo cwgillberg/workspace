@@ -1,5 +1,6 @@
 'use strict';
 
+//global DOM elements
 const clock = document.querySelector('#clock-counter');
 const startBtn = document.getElementById('start');
 const stopBtn = document.getElementById('stop');
@@ -7,7 +8,7 @@ const resetBtn = document.getElementById('reset');
 const pageTitle = document.querySelector('title');
 const audioPlayer = document.querySelector('#player');
 
-
+//global variables
 const focusDefault = 25;
 const breakDefault = 5;
 
@@ -17,8 +18,8 @@ let breakDuration = breakDefault;
 let preferredFocus = focusDefault;
 let preferredBreak = breakDefault;
 let secs = 60;
-let stopped = false;
-let started = false;
+let isStopped = false;
+let isStarted = false;
 
 window.addEventListener('load', () => {
     updateClockAndTitle(focusDefault, 0);
@@ -49,10 +50,10 @@ document.getElementById('save-button').addEventListener('click', () => {
 
 function startFocus() {
     let initialDecrement = true;
-    started = true;
+    isStarted = true;
 
     timer = setInterval(() => {
-        if(initialDecrement && !stopped) {
+        if(initialDecrement && !isStopped) {
             focusDuration--;
             initialDecrement = false;
         }
@@ -67,21 +68,25 @@ function startFocus() {
         }
 
         if(focusDuration < 0) {
-            audioPlayer.play();
+            try {
+                audioPlayer.play();
+            } catch(error) {
+                console.log('failed to play audio', error);
+            }
             clearInterval(timer);
-            started = false;
+            isStarted = false;
         }
     }, 1000);
 }
 
 function stopClock() {
     clearInterval(timer);
-    stopped = true;
+    isStopped = true;
 }
 
 function resetClock() {
     clearInterval(timer);
-    stopped = false;
+    isStopped = false;
     if(focusDefault === preferredBreak) {
         focusDuration = focusDefault;
     } else {
@@ -112,7 +117,7 @@ function toggleSettings(state) {
 }
 
 function saveSettings() {
-    if(!started) {
+    if(!isStarted) {
         preferredFocus = document.getElementById('focus-duration').value;
         preferredBreak = document.getElementById('break-duration').value;
      

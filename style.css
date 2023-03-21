@@ -14,9 +14,14 @@ nav {
 }
 
 
-#logo {
+.logo {
     color: black;
     text-decoration: underline;
+    float: left;
+    display: block;
+    text-align: center;
+    padding: 10px 13px;
+    font-size: 17px;
 }
 
 .nav-item {
@@ -126,5 +131,10 @@ button {
         display: flex;
         flex-direction: column;
         text-align: left;
+    }
+
+
+    .nav-item:hover {
+        background-color: lightgray;
     }
 }
