@@ -13,12 +13,21 @@ nav {
     background-color: gray;
 }
 
-#settings {
+
+#logo {
+    color: black;
+    text-decoration: underline;
+}
+
+.nav-item {
     float: left;
     display: block;
+    color: #f2f2f2;
     text-align: center;
-    padding: 10px;
-    background-color: lightgray;
+    padding: 10px 13px;
+    text-decoration: none;
+    font-size: 17px;
+    
 }
 
 .settings {
@@ -27,8 +36,7 @@ nav {
 
 form {
     text-align: center;
-    display: grid;
-    
+    display: none;
     gap: 20px;
 }
 
@@ -50,9 +58,6 @@ form {
     align-self: center;
 }
 
-form > {
-
-}
 .content {
     width: 100%;
     display: flex;
@@ -86,9 +91,10 @@ button {
 #reset {
     background-color: red;
 }
+
 @media screen and (min-width: 600px) {
     .clock {
-        margin-top: 300px;
+        margin-top: 200px;
         font-size: 90px;
     }
    
@@ -107,6 +113,18 @@ button {
         flex-direction: row;
         gap: 40px;
     }
-
-
+    
+    form {
+        text-align: center;
+        display: none;
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    .form-item {
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+    }
 }

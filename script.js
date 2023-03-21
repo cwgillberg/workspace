@@ -6,60 +6,71 @@ const stopBtn = document.getElementById('stop');
 const resetBtn = document.getElementById('reset');
 const pageTitle = document.querySelector('title');
 const audioPlayer = document.querySelector('#player');
-const settings = document.getElementById('settings');
 
 
-startBtn.addEventListener('click', () => startClock());
-stopBtn.addEventListener('click', () => stopClock());
-resetBtn.addEventListener('click',() => resetClock());
-settings.addEventListener('click', () => {
-    if(document.querySelector('form').style.display === 'grid') {
-        document.querySelector('form').style.display = 'none';
-    } else {
-        document.querySelector('form').style.display = 'grid';
-    }
-})
+const focusDefault = 25;
+const breakDefault = 5;
 
 let timer;
-let deadline = 1;
-let secs = 20;
+let focusDuration = focusDefault;
+let breakDuration = breakDefault;
+let preferredFocus = focusDefault;
+let preferredBreak = breakDefault;
+let secs = 60;
 let stopped = false;
+let started = false;
+
+window.addEventListener('load', () => {
+    updateClockAndTitle(focusDefault, 0);
+});
 
 
-function startClock() {
+startBtn.addEventListener('click', () => startFocus());
+
+stopBtn.addEventListener('click', () => stopClock());
+
+resetBtn.addEventListener('click',() => resetClock());
+
+document.getElementById('settings').addEventListener('click', () => {
+    if(document.querySelector('form').style.display === 'grid') {
+        toggleSettings('off');
+    } else {
+        toggleSettings('on');
+    }
+});
+
+
+document.getElementById('save-button').addEventListener('click', () => {
+    saveSettings();
+    toggleSettings('off');
+    
+});
+
+
+function startFocus() {
     let initialDecrement = true;
+    started = true;
 
     timer = setInterval(() => {
         if(initialDecrement && !stopped) {
-            deadline--;
+            focusDuration--;
             initialDecrement = false;
         }
 
         secs--;
 
-        if(secs >= 10 && deadline >= 10) {
-            clock.innerHTML = `${deadline}:${secs}`;
-            pageTitle.innerHTML = `${deadline}:${secs} - Workspace`;
-        } else if(secs >= 10 && deadline < 10) {
-            clock.innerHTML = `0${deadline}:${secs}`;
-            pageTitle.innerHTML = `0${deadline}:${secs} - Workspace`;
-        } else if(secs < 10 && deadline >= 10) {
-            clock.innerHTML = `${deadline}:0${secs}`;
-            pageTitle.innerHTML = `${deadline}:0${secs} - Workspace`;
-        } else if(secs < 10 && deadline < 10) {
-            clock.innerHTML = `0${deadline}:0${secs}`;
-            pageTitle.innerHTML = `0${deadline}:0${secs} - Workspace`;
-        }
+        updateClockAndTitle(focusDuration, secs);
 
         if(secs === 0) {
-            deadline--;
+            focusDuration--;
             secs = 60;
         }
 
-      if(deadline < 0) {
-        audioPlayer.play();
-        clearInterval(timer);
-      }
+        if(focusDuration < 0) {
+            audioPlayer.play();
+            clearInterval(timer);
+            started = false;
+        }
     }, 1000);
 }
 
@@ -71,9 +82,63 @@ function stopClock() {
 function resetClock() {
     clearInterval(timer);
     stopped = false;
-    deadline = 20;
+    if(focusDefault === preferredBreak) {
+        focusDuration = focusDefault;
+    } else {
+        focusDuration = preferredFocus;
+    }
     secs = 60;
-    clock.innerHTML = `${deadline}:00`;
+    clock.innerHTML = `${focusDuration}:00`;
     pageTitle.innerHTML = `Workspace`;
 }
 
+function updateClockAndTitle(mins, secs) {
+    const paddedMinutes = mins.toString().padStart(2, '0');
+    const paddedSeconds = secs.toString().padStart(2, '0');
+
+    clock.innerHTML = `${paddedMinutes}:${paddedSeconds}`;
+    pageTitle.innerHTML = `${paddedMinutes}:${paddedSeconds} - Workspace`;
+}
+
+function toggleSettings(state) {    
+    if(state === 'on') {
+        document.querySelector('form').style.display = 'grid';
+        document.getElementById('focus-duration').value = preferredFocus;
+        document.getElementById('break-duration').value = preferredBreak;
+    } else {
+        document.querySelector('form').style.display = 'none';
+    }
+
+}
+
+function saveSettings() {
+    if(!started) {
+        preferredFocus = document.getElementById('focus-duration').value;
+        preferredBreak = document.getElementById('break-duration').value;
+     
+        focusDuration = preferredFocus;
+        breakDuration = preferredBreak;
+
+        document.querySelector('form').reset;
+        updateClockAndTitle(focusDuration, 0);
+
+        document.querySelector('form').reset;
+
+
+    } else {
+        if(confirm('You are about to reset your focus, are you sure?')) {
+            preferredFocus = document.getElementById('focus-duration').value;
+            preferredBreak = document.getElementById('break-duration').value;
+                    
+            focusDuration = preferredFocus;
+            breakDuration = preferredBreak;
+    
+            updateClockAndTitle(focusDuration, 0);
+
+            document.querySelector('form').reset;
+
+            resetClock();
+        }
+    }
+
+}

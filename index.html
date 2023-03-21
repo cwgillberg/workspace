@@ -13,8 +13,17 @@
     </audio>
 
     <nav>
-       <div id="settings">
+        <div class="nav-item">
+            <p id="logo">Workspace</p>
+        </div>
+       <div class="nav-item" id="settings">
         <p>Settings</p>
+       </div>
+       <div class="nav-item" id="focus">
+        <p>Focus</p>
+       </div>
+       <div class="nav-item" id="break">
+        <p>Break</p>
        </div>
     </nav>    
 
@@ -45,7 +54,7 @@
                     <input type="text" id="sound" name="sound">
                 </div>
 
-                <button type="button">Save</button>
+                <button type="button" id="save-button">Save</button>
         </form>
 
         
@@ -55,7 +64,7 @@
     <div class="content">
         <div class="clock">
                 <div class="timer-display">
-                    <h2 id="clock-counter">20:00</h2>
+                    <h2 id="clock-counter"></h2>
                 </div>
                 <div class="timer-buttons">
                     <button id="start">Start</button>
